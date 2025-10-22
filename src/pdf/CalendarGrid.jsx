@@ -26,6 +26,7 @@ export function CalendarGrid({ days, events, timeRange = { start: 8, end: 20 } }
           events={events}
           timeRange={timeRange}
           layout={layout}
+          isLast={index === days.length - 1}
         />
       ))}
     </View>

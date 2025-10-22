@@ -7,7 +7,7 @@ import { EventBlock } from './EventBlock'
 /**
  * Composant pour afficher une colonne de jour avec ses événements
  */
-export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout }) {
+export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout, isLast = false }) {
   // Filtrer et valider les événements pour ce jour
   const dayEvents = getEventsForDay(events, date)
     .filter(event => isEventVisible(event, date, timeRange))
@@ -41,8 +41,13 @@ export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, lay
     textAlign: 'center',
   }
 
+  // Pour la dernière colonne, utiliser flex: 1 pour remplir l'espace restant
+  const columnStyle = isLast 
+    ? { flex: 1 }
+    : { width: layout.dayColumnWidth }
+
   return (
-    <View style={[styles.dayColumn, { width: layout.dayColumnWidth }]}>
+    <View style={[styles.dayColumn, columnStyle]}>
       {/* En-tête du jour */}
       <View style={[styles.dayHeader, { height: layout.dayHeaderHeight }]}>
         <Text style={headerTextStyle}>{formatDayHeader(date)}</Text>

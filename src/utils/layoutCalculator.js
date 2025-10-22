@@ -38,9 +38,10 @@ export function calculateLayout(numberOfHours, numberOfDays) {
   // Hauteur totale de la grille (body)
   const gridBodyHeight = cellHeight * numberOfHours
 
-  // Largeurs des colonnes
+  // Largeurs des colonnes - calculées pour totaliser exactement 100%
   const timeColumnWidth = '8%'
-  const dayColumnWidth = `${(92 / numberOfDays).toFixed(1)}%`
+  // Utiliser plus de décimales pour éviter les espaces blancs
+  const dayColumnWidth = `${(92 / numberOfDays).toFixed(4)}%`
 
   // Tailles de police adaptatives selon la hauteur des cellules
   const fontSizes = calculateFontSizes(cellHeight)
