@@ -1,16 +1,13 @@
 import { View, Text } from '@react-pdf/renderer'
 import { styles } from './styles'
 import { formatTime } from '../utils/dateHelpers'
-import { 
-  calculateEventPosition, 
-  calculateEventDuration,
-  truncateEventToWorkHours 
-} from '../utils/weekGrouper'
+import { truncateEventToWorkHours } from '../utils/weekGrouper'
+import { calculateEventDimensions, calculateEventTextDisplay } from '../utils/layoutCalculator'
 
 /**
  * Composant pour afficher un bloc événement dans la grille
  */
-export function EventBlock({ event, day }) {
+export function EventBlock({ event, day, timeRange = { start: 8, end: 20 }, layout }) {
   try {
     // Validation des entrées
     if (!event || !event.start || !event.end || !day) {
@@ -19,7 +16,7 @@ export function EventBlock({ event, day }) {
     }
 
     // Tronquer l'événement aux heures de travail
-    const truncatedEvent = truncateEventToWorkHours(event, day)
+    const truncatedEvent = truncateEventToWorkHours(event, day, timeRange)
     const { displayStart, displayEnd } = truncatedEvent
 
     // Valider les dates retournées
@@ -33,38 +30,43 @@ export function EventBlock({ event, day }) {
       return null
     }
 
-    // Calculer la position et la hauteur
-    const topPositionMinutes = calculateEventPosition(displayStart)
-    const duration = calculateEventDuration(displayStart, displayEnd)
-    
-    // Convertir en pixels : 40px par heure = 40/60 px par minute
-    let topPosition = (topPositionMinutes / 60) * 40
-    let height = (duration / 60) * 40 // 40px par heure
+    // Calculer la position et la hauteur avec le layout responsive
+    const dimensions = calculateEventDimensions(
+      displayStart,
+      displayEnd,
+      timeRange.start,
+      layout.pixelsPerHour
+    )
 
-    // Valider et corriger les valeurs calculées
-    if (isNaN(topPosition)) {
-      console.warn('Position NaN pour événement:', event.summary)
+    let topPosition = dimensions.top
+    let height = dimensions.height
+
+    // Valider les valeurs calculées
+    if (isNaN(topPosition) || isNaN(height)) {
+      console.warn('Dimensions invalides pour événement:', event.summary)
       return null
     }
 
-    if (isNaN(height)) {
-      console.warn('Hauteur NaN pour événement:', event.summary)
-      return null
-    }
-
-    // Forcer les limites strictes
-    topPosition = Math.floor(Math.max(0, Math.min(topPosition, 450))) // 480 - 30
-    height = Math.floor(Math.max(25, Math.min(height, 480 - topPosition)))
+    // Forcer les limites strictes selon le layout
+    const maxPosition = layout.gridBodyHeight - 15
+    topPosition = Math.floor(Math.max(0, Math.min(topPosition, maxPosition)))
+    height = Math.floor(Math.max(15, Math.min(height, layout.gridBodyHeight - topPosition)))
 
     // Dernière vérification de sécurité
-    if (topPosition + height > 480) {
-      height = 480 - topPosition
+    if (topPosition + height > layout.gridBodyHeight) {
+      height = layout.gridBodyHeight - topPosition
     }
 
-    // Permettre au titre de tenir sur 2 lignes (environ 50 caractères)
-    const maxTitleLength = 50
-    const title = event.summary && event.summary.length > maxTitleLength 
-      ? event.summary.substring(0, maxTitleLength) + '...'
+    // Calculer l'affichage du texte selon la hauteur disponible
+    const textDisplay = calculateEventTextDisplay(
+      height, 
+      layout.cellHeight,
+      layout.eventTitleSize,
+      layout.eventTimeSize
+    )
+    
+    const title = event.summary && event.summary.length > textDisplay.maxTitleLength 
+      ? event.summary.substring(0, textDisplay.maxTitleLength) + '...'
       : event.summary || '(Sans titre)'
 
     // Sécuriser le formatage des heures
@@ -78,6 +80,19 @@ export function EventBlock({ event, day }) {
       endTime = '??:??'
     }
 
+    const titleStyle = {
+      fontSize: textDisplay.titleSize,
+      fontWeight: 700,
+      color: '#000000',
+      marginBottom: textDisplay.showTime ? 2 : 0,
+      lineHeight: 1.1,
+    }
+
+    const timeStyle = {
+      fontSize: textDisplay.timeSize,
+      color: '#666666',
+    }
+
     return (
       <View
         style={[
@@ -88,10 +103,14 @@ export function EventBlock({ event, day }) {
           },
         ]}
       >
-        <Text style={styles.eventTitle}>{title}</Text>
-        <Text style={styles.eventTime}>
-          {startTime} - {endTime}
-        </Text>
+        {textDisplay.showTitle && (
+          <Text style={titleStyle}>{title}</Text>
+        )}
+        {textDisplay.showTime && (
+          <Text style={timeStyle}>
+            {startTime} - {endTime}
+          </Text>
+        )}
       </View>
     )
   } catch (error) {

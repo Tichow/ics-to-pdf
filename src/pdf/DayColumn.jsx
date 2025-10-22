@@ -7,10 +7,10 @@ import { EventBlock } from './EventBlock'
 /**
  * Composant pour afficher une colonne de jour avec ses événements
  */
-export function DayColumn({ date, events }) {
+export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout }) {
   // Filtrer et valider les événements pour ce jour
   const dayEvents = getEventsForDay(events, date)
-    .filter(event => isEventVisible(event, date))
+    .filter(event => isEventVisible(event, date, timeRange))
     .filter(event => {
       // Valider que les dates sont correctes
       if (!event.start || !event.end) {
@@ -24,25 +24,46 @@ export function DayColumn({ date, events }) {
       return true
     })
 
-  const hours = Array.from({ length: 12 }, (_, i) => i + 8)
+  const numberOfHours = timeRange.end - timeRange.start
+  const hours = Array.from({ length: numberOfHours }, (_, i) => i + timeRange.start)
+
+  const cellStyle = {
+    height: layout.cellHeight,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    borderBottomStyle: 'solid',
+  }
+
+  const headerTextStyle = {
+    fontSize: layout.dayHeaderTextSize,
+    fontWeight: 700,
+    color: '#2563EB',
+    textAlign: 'center',
+  }
 
   return (
-    <View style={styles.dayColumn}>
+    <View style={[styles.dayColumn, { width: layout.dayColumnWidth }]}>
       {/* En-tête du jour */}
-      <View style={styles.dayHeader}>
-        <Text style={styles.dayHeaderText}>{formatDayHeader(date)}</Text>
+      <View style={[styles.dayHeader, { height: layout.dayHeaderHeight }]}>
+        <Text style={headerTextStyle}>{formatDayHeader(date)}</Text>
       </View>
 
       {/* Corps avec grille horaire */}
-      <View style={styles.dayBody}>
+      <View style={[styles.dayBody, { height: layout.gridBodyHeight }]}>
         {/* Lignes horaires en fond */}
         {hours.map(hour => (
-          <View key={hour} style={styles.hourCell} />
+          <View key={hour} style={cellStyle} />
         ))}
 
         {/* Événements en position absolue */}
         {dayEvents.map((event, index) => (
-          <EventBlock key={`${event.summary}-${index}`} event={event} day={date} />
+          <EventBlock 
+            key={`${event.summary}-${index}`} 
+            event={event} 
+            day={date}
+            timeRange={timeRange}
+            layout={layout}
+          />
         ))}
       </View>
     </View>

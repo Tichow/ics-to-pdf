@@ -55,14 +55,16 @@ export function getWeekStarts(startDate, endDate) {
 }
 
 /**
- * Retourne les 5 jours ouvrés d'une semaine (lundi-vendredi)
+ * Retourne les jours d'une semaine (lundi-vendredi ou lundi-dimanche)
  * @param {Date} weekStart - Lundi de la semaine
- * @returns {Array<Date>} - Tableau des 5 jours
+ * @param {boolean} includeWeekends - Inclure samedi et dimanche
+ * @returns {Array<Date>} - Tableau des jours
  */
-export function getWeekDays(weekStart) {
+export function getWeekDays(weekStart, includeWeekends = false) {
+  const lastDay = includeWeekends ? 6 : 4 // 6 jours après lundi = dimanche, 4 = vendredi
   return eachDayOfInterval({
     start: weekStart,
-    end: addDays(weekStart, 4), // 4 jours après le lundi = vendredi
+    end: addDays(weekStart, lastDay),
   })
 }
 

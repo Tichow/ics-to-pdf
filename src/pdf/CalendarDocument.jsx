@@ -8,11 +8,12 @@ import { groupEventsByWeek } from '../utils/weekGrouper'
 /**
  * Composant principal du document PDF
  */
-export function CalendarDocument({ events, startDate, endDate }) {
+export function CalendarDocument({ events, startDate, endDate, includeWeekends = false, timeRange = { start: 8, end: 20 } }) {
   console.log('CalendarDocument: Génération avec', events.length, 'événements')
   console.log('Période:', startDate, 'à', endDate)
+  console.log('Options:', { includeWeekends, timeRange })
   
-  const weeks = groupEventsByWeek(events, startDate, endDate)
+  const weeks = groupEventsByWeek(events, startDate, endDate, includeWeekends)
   console.log('Nombre de semaines:', weeks.length)
   
   weeks.forEach((week, i) => {
@@ -32,6 +33,8 @@ export function CalendarDocument({ events, startDate, endDate }) {
           weekEnd={week.weekEnd}
           days={week.days}
           events={week.events}
+          includeWeekends={includeWeekends}
+          timeRange={timeRange}
         />
       ))}
     </Document>

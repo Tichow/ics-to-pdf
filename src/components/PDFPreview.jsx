@@ -53,7 +53,7 @@ class PDFErrorBoundary extends Component {
 /**
  * Composant pour afficher l'aperçu du PDF
  */
-export function PDFPreview({ events, startDate, endDate, onClose }) {
+export function PDFPreview({ events, startDate, endDate, onClose, includeWeekends, timeRange }) {
   console.log('PDFPreview: Affichage avec', events.length, 'événements')
 
   return (
@@ -84,7 +84,13 @@ export function PDFPreview({ events, startDate, endDate, onClose }) {
               }
             >
               <PDFViewer width="100%" height="100%" showToolbar={true}>
-                <CalendarDocument events={events} startDate={startDate} endDate={endDate} />
+                <CalendarDocument 
+                  events={events} 
+                  startDate={startDate} 
+                  endDate={endDate}
+                  includeWeekends={includeWeekends}
+                  timeRange={timeRange}
+                />
               </PDFViewer>
             </Suspense>
           </PDFErrorBoundary>

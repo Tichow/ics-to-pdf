@@ -25,6 +25,8 @@ function App() {
   } = useICSData()
 
   const [showPreview, setShowPreview] = useState(false)
+  const [includeWeekends, setIncludeWeekends] = useState(false)
+  const [timeRange, setTimeRange] = useState({ start: 8, end: 20 })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -83,6 +85,10 @@ function App() {
                 startDate={startDate}
                 endDate={endDate}
                 onPreview={() => setShowPreview(true)}
+                includeWeekends={includeWeekends}
+                onIncludeWeekendsChange={setIncludeWeekends}
+                timeRange={timeRange}
+                onTimeRangeChange={setTimeRange}
               />
             )}
 
@@ -173,6 +179,8 @@ function App() {
           startDate={startDate}
           endDate={endDate}
           onClose={() => setShowPreview(false)}
+          includeWeekends={includeWeekends}
+          timeRange={timeRange}
         />
       )}
     </div>

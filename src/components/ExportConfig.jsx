@@ -11,6 +11,10 @@ export function ExportConfig({
   startDate,
   endDate,
   onPreview,
+  includeWeekends,
+  onIncludeWeekendsChange,
+  timeRange,
+  onTimeRangeChange,
 }) {
   const canExport = events.length > 0 && startDate <= endDate
 
@@ -20,7 +24,13 @@ export function ExportConfig({
     try {
       console.log('Génération du PDF avec', events.length, 'événements...')
       const blob = await pdf(
-        <CalendarDocument events={events} startDate={startDate} endDate={endDate} />
+        <CalendarDocument 
+          events={events} 
+          startDate={startDate} 
+          endDate={endDate}
+          includeWeekends={includeWeekends}
+          timeRange={timeRange}
+        />
       ).toBlob()
 
       const url = URL.createObjectURL(blob)
@@ -55,6 +65,62 @@ export function ExportConfig({
             placeholder="calendrier-2024-01-24"
           />
           <span className="flex items-center text-gray-600 font-medium">.pdf</span>
+        </div>
+      </div>
+
+      {/* Options d'affichage */}
+      <div className="mb-4 space-y-4">
+        <h3 className="text-sm font-medium text-gray-700">Options d&apos;affichage</h3>
+        
+        {/* Option week-end */}
+        <div className="flex items-center">
+          <input
+            id="includeWeekends"
+            type="checkbox"
+            checked={includeWeekends}
+            onChange={e => onIncludeWeekendsChange(e.target.checked)}
+            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary"
+          />
+          <label htmlFor="includeWeekends" className="ml-2 text-sm text-gray-700">
+            Inclure les week-ends
+          </label>
+        </div>
+
+        {/* Plage horaire */}
+        <div className="space-y-2">
+          <label className="text-sm text-gray-700 block">
+            Plage horaire : {timeRange.start}h - {timeRange.end}h
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="startHour" className="text-xs text-gray-600 block mb-1">
+                Heure de début
+              </label>
+              <input
+                id="startHour"
+                type="number"
+                min="0"
+                max={timeRange.end - 1}
+                value={timeRange.start}
+                onChange={e => onTimeRangeChange({ ...timeRange, start: parseInt(e.target.value) })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label htmlFor="endHour" className="text-xs text-gray-600 block mb-1">
+                Heure de fin
+              </label>
+              <input
+                id="endHour"
+                type="number"
+                min={timeRange.start + 1}
+                max="24"
+                value={timeRange.end}
+                onChange={e => onTimeRangeChange({ ...timeRange, end: parseInt(e.target.value) })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
