@@ -9,12 +9,13 @@ const A4_LANDSCAPE = {
   height: 595,
 }
 
-// Marges et espacements
+// Marges et espacements - Style Notion épuré
 const SPACING = {
-  pagePadding: 20,
-  weekHeaderHeight: 25,
-  weekHeaderMargin: 15,
-  dayHeaderHeight: 30,
+  pagePadding: 16,
+  weekHeaderHeight: 20,
+  weekHeaderMargin: 12,
+  weekHeaderPaddingBottom: 10, // correspond à styles.weekHeader.paddingBottom
+  dayHeaderHeight: 28,
 }
 
 /**
@@ -24,24 +25,41 @@ const SPACING = {
  * @returns {Object} - Toutes les dimensions calculées
  */
 export function calculateLayout(numberOfHours, numberOfDays) {
-  // Hauteur disponible pour la grille
-  const availableHeight = 
-    A4_LANDSCAPE.height - 
-    (SPACING.pagePadding * 2) - 
-    SPACING.weekHeaderHeight - 
-    SPACING.weekHeaderMargin - 
+  // Largeur des bordures entre cellules (1pt) –
+  // IMPORTANT : React-PDF inclut la bordure dans la hauteur déclarée de l'élément
+  // (modèle "border-box"). Par conséquent, ces bordures NE doivent PAS être
+  // soustraites du calcul de la hauteur des cellules. Sinon on provoque un
+  // manque cumulatif qui crée l'espace vide observé en bas de la grille.
+
+  const BORDER_WIDTH = 1
+
+  // Calculer l'espace total disponible pour la grille
+  const availableHeight =
+    A4_LANDSCAPE.height -
+    (SPACING.pagePadding * 2) -
+    SPACING.weekHeaderHeight -
+    SPACING.weekHeaderMargin -
+    SPACING.weekHeaderPaddingBottom -
     SPACING.dayHeaderHeight
 
-  // Hauteur par cellule horaire
-  const cellHeight = Math.floor(availableHeight / numberOfHours)
-  
-  // Hauteur totale de la grille (body)
-  const gridBodyHeight = cellHeight * numberOfHours
+  // Petite marge de sécurité pour absorber les arrondis du moteur PDF
+  const SAFETY_MARGIN = 1
+  const effectiveAvailableHeight = availableHeight - SAFETY_MARGIN
 
-  // Largeurs des colonnes - calculées pour totaliser exactement 100%
-  const timeColumnWidth = '8%'
+  // React-PDF applique le modèle border-box : la bordure fait partie de la
+  // hauteur déclarée. Nous pouvons donc simplement répartir la hauteur
+  // disponible entre toutes les cellules ; la bordure ne nécessite aucun
+  // ajustement supplémentaire.
+
+  const cellHeight = effectiveAvailableHeight / numberOfHours
+
+  // Hauteur de la grille = exactement l'espace disponible (pas plus!)
+  const gridBodyHeight = effectiveAvailableHeight
+
+  // Largeurs des colonnes - Style Notion épuré avec colonne temps plus petite
+  const timeColumnWidth = '6%'
   // Utiliser plus de décimales pour éviter les espaces blancs
-  const dayColumnWidth = `${(92 / numberOfDays).toFixed(4)}%`
+  const dayColumnWidth = `${(94 / numberOfDays).toFixed(4)}%`
 
   // Tailles de police adaptatives selon la hauteur des cellules
   const fontSizes = calculateFontSizes(cellHeight)
@@ -63,7 +81,7 @@ export function calculateLayout(numberOfHours, numberOfDays) {
     // Métadonnées
     numberOfHours,
     numberOfDays,
-    pixelsPerHour: cellHeight,
+    pixelsPerHour: cellHeight, // Pixels par heure pour le positionnement des événements
   }
 }
 
@@ -73,16 +91,16 @@ export function calculateLayout(numberOfHours, numberOfDays) {
  * @returns {Object} - Tailles de police
  */
 function calculateFontSizes(cellHeight) {
-  // Tailles de police adaptées à la hauteur de cellule
+  // Tailles de police adaptées à la hauteur de cellule - Style Notion épuré
   // Pour cellHeight = 40 (référence), on a les tailles actuelles
   const ratio = cellHeight / 40
   
   return {
-    weekTitleSize: Math.max(14, Math.min(18, Math.round(18 * ratio))),
-    dayHeaderTextSize: Math.max(10, Math.min(12, Math.round(12 * ratio))),
-    timeTextSize: Math.max(8, Math.min(12, Math.round(12 * ratio))),
-    eventTitleSize: Math.max(7, Math.min(10, Math.round(10 * ratio))),
-    eventTimeSize: Math.max(6, Math.min(9, Math.round(9 * ratio))),
+    weekTitleSize: Math.max(12, Math.min(14, Math.round(14 * ratio))),
+    dayHeaderTextSize: Math.max(8, Math.min(10, Math.round(10 * ratio))),
+    timeTextSize: Math.max(7, Math.min(8, Math.round(7.5 * ratio))),
+    eventTitleSize: Math.max(6.5, Math.min(8, Math.round(7.5 * ratio))),
+    eventTimeSize: Math.max(6, Math.min(7, Math.round(6.5 * ratio))),
   }
 }
 
@@ -155,7 +173,7 @@ export function calculateEventDimensions(startTime, endTime, startHour, pixelsPe
 
   return {
     top: Math.max(0, topPosition),
-    height: Math.max(15, height), // Minimum 15px pour visibilité
+    height: height, // Pas de minimum ici, sera appliqué après contrainte de grille
   }
 }
 

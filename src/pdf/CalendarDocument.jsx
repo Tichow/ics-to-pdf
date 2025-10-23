@@ -6,12 +6,19 @@ import { groupEventsByWeek } from '../utils/weekGrouper'
 // pour éviter les problèmes d'embedding avec de nombreux événements
 
 /**
- * Composant principal du document PDF
+ * Composant principal du document PDF - Style Notion avec thème
  */
-export function CalendarDocument({ events, startDate, endDate, includeWeekends = false, timeRange = { start: 8, end: 20 } }) {
+export function CalendarDocument({ 
+  events, 
+  startDate, 
+  endDate, 
+  includeWeekends = false, 
+  timeRange = { start: 8, end: 20 },
+  theme = 'neutral'
+}) {
   console.log('CalendarDocument: Génération avec', events.length, 'événements')
   console.log('Période:', startDate, 'à', endDate)
-  console.log('Options:', { includeWeekends, timeRange })
+  console.log('Options:', { includeWeekends, timeRange, theme })
   
   const weeks = groupEventsByWeek(events, startDate, endDate, includeWeekends)
   console.log('Nombre de semaines:', weeks.length)
@@ -35,6 +42,7 @@ export function CalendarDocument({ events, startDate, endDate, includeWeekends =
           events={week.events}
           includeWeekends={includeWeekends}
           timeRange={timeRange}
+          theme={theme}
         />
       ))}
     </Document>

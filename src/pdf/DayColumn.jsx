@@ -1,13 +1,15 @@
 import { View, Text } from '@react-pdf/renderer'
-import { styles } from './styles'
+import { createStyles } from './styles'
 import { formatDayHeader, getEventsForDay } from '../utils/dateHelpers'
 import { isEventVisible } from '../utils/weekGrouper'
 import { EventBlock } from './EventBlock'
 
 /**
- * Composant pour afficher une colonne de jour avec ses événements
+ * Composant pour afficher une colonne de jour avec ses événements - Style Notion
  */
-export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout, isLast = false }) {
+export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout, theme = 'neutral', isLast = false }) {
+  const styles = createStyles(theme)
+  
   // Filtrer et valider les événements pour ce jour
   const dayEvents = getEventsForDay(events, date)
     .filter(event => isEventVisible(event, date, timeRange))
@@ -27,38 +29,52 @@ export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, lay
   const numberOfHours = timeRange.end - timeRange.start
   const hours = Array.from({ length: numberOfHours }, (_, i) => i + timeRange.start)
 
-  const cellStyle = {
-    height: layout.cellHeight,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    borderBottomStyle: 'solid',
-  }
-
-  const headerTextStyle = {
-    fontSize: layout.dayHeaderTextSize,
-    fontWeight: 700,
-    color: '#2563EB',
-    textAlign: 'center',
-  }
-
-  // Pour la dernière colonne, utiliser flex: 1 pour remplir l'espace restant
+  // Pour la dernière colonne, utiliser flex: 1 et supprimer la bordure droite
   const columnStyle = isLast 
-    ? { flex: 1 }
-    : { width: layout.dayColumnWidth }
+    ? [{ flex: 1 }, styles.dayColumnLast]
+    : [{ width: layout.dayColumnWidth }]
+
+  // Formatter l'en-tête : jour de la semaine + date
+  const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' }).toUpperCase().replace('.', '')
+  const dayNumber = date.getDate()
 
   return (
-    <View style={[styles.dayColumn, columnStyle]}>
-      {/* En-tête du jour */}
-      <View style={[styles.dayHeader, { height: layout.dayHeaderHeight }]}>
-        <Text style={headerTextStyle}>{formatDayHeader(date)}</Text>
+    <View style={[styles.dayColumn, ...columnStyle]}>
+      {/* En-tête du jour - Style Notion avec bordure séparée */}
+      <View style={[
+        styles.dayHeader,
+        styles.dayHeaderBorder,
+        // Pour la dernière colonne, appliquer le rayon du coin supérieur droit
+        isLast && styles.dayHeaderLast,
+        { height: layout.dayHeaderHeight },
+      ]}>
+        <Text style={styles.dayHeaderText}>{dayName}</Text>
+        <Text style={styles.dayHeaderDate}>{dayNumber}</Text>
       </View>
 
       {/* Corps avec grille horaire */}
-      <View style={[styles.dayBody, { height: layout.gridBodyHeight }]}>
-        {/* Lignes horaires en fond */}
-        {hours.map(hour => (
-          <View key={hour} style={cellStyle} />
-        ))}
+      <View style={[
+        styles.dayBody,
+        isLast && styles.dayBodyLast,
+        { height: layout.gridBodyHeight },
+      ]}>
+        {/* Lignes horaires - toutes de même hauteur */}
+        {hours.map((hour, index) => {
+          const isLastCell = index === hours.length - 1
+          return (
+            <View
+              key={hour}
+              style={[
+                styles.hourCell,
+                { height: layout.cellHeight },
+                // Bordure sauf pour la dernière
+                !isLastCell && styles.hourCellWithBorder,
+                // Dernière cellule de la dernière colonne → arrondi
+                (isLast && isLastCell) && styles.hourCellLastOfGrid,
+              ]}
+            />
+          )
+        })}
 
         {/* Événements en position absolue */}
         {dayEvents.map((event, index) => (
@@ -68,6 +84,7 @@ export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, lay
             day={date}
             timeRange={timeRange}
             layout={layout}
+            theme={theme}
           />
         ))}
       </View>

@@ -1,7 +1,10 @@
 import { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Upload } from 'lucide-react'
 
 /**
- * Composant pour uploader un fichier ICS ou entrer une URL
+ * Composant pour uploader un fichier ICS ou entrer une URL - Style Notion
  */
 export function FileUploader({ onFileLoad, onURLLoad, loading }) {
   const [mode, setMode] = useState('file') // 'file' ou 'url'
@@ -53,52 +56,37 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
   }
 
   return (
-    <div className="card">
-      <div className="flex items-center gap-2 mb-6">
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-100">
-          <svg className="w-4 h-4 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </div>
-        <h2 className="text-base font-semibold text-neutral-900">
-          Importer un calendrier
-        </h2>
-      </div>
-
-      {/* Sélecteur de mode */}
-      <div className="inline-flex items-center bg-neutral-100 rounded-lg p-1 mb-6">
-        <button
+    <div>
+      {/* Sélecteur de mode - Notion-style */}
+      <div className="inline-flex items-center bg-secondary rounded-md p-0.5 mb-4">
+        <Button
+          variant={mode === 'file' ? 'default' : 'ghost'}
+          size="sm"
           onClick={() => setMode('file')}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-            mode === 'file'
-              ? 'bg-white text-neutral-900 shadow-sm'
-              : 'text-neutral-600 hover:text-neutral-900'
-          }`}
           disabled={loading}
+          className="h-7"
         >
           Fichier local
-        </button>
-        <button
+        </Button>
+        <Button
+          variant={mode === 'url' ? 'default' : 'ghost'}
+          size="sm"
           onClick={() => setMode('url')}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-            mode === 'url'
-              ? 'bg-white text-neutral-900 shadow-sm'
-              : 'text-neutral-600 hover:text-neutral-900'
-          }`}
           disabled={loading}
+          className="h-7"
         >
           URL
-        </button>
+        </Button>
       </div>
 
       {/* Zone d'upload de fichier */}
       {mode === 'file' && (
         <div>
           <div
-            className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
+            className={`border-2 border-dashed rounded-md p-8 text-center cursor-pointer transition-colors ${
               dragActive
-                ? 'border-neutral-900 bg-neutral-50'
-                : 'border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50'
+                ? 'border-foreground bg-accent'
+                : 'border-border hover:border-foreground/50 hover:bg-accent/50'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -114,51 +102,40 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
               className="hidden"
               disabled={loading}
             />
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-100 mb-4">
-              <svg className="w-6 h-6 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <p className="text-neutral-900 font-medium mb-1">
-              Glissez-déposez votre fichier .ics ici
+            <Upload className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
+            <p className="text-sm font-medium mb-1">
+              Glissez-déposez votre fichier .ics
             </p>
-            <p className="text-neutral-500 text-sm">ou cliquez pour sélectionner</p>
+            <p className="text-xs text-muted-foreground">ou cliquez pour sélectionner</p>
           </div>
         </div>
       )}
 
       {/* Champ URL */}
       {mode === 'url' && (
-        <form onSubmit={handleURLSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="calendar-url" className="label">
-              URL du calendrier
-            </label>
-            <input
-              id="calendar-url"
-              type="url"
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              placeholder="https://example.com/calendrier.ics"
-              className="input"
-              disabled={loading}
-              required
-            />
-          </div>
-          <button
+        <form onSubmit={handleURLSubmit} className="space-y-3">
+          <Input
+            type="url"
+            value={url}
+            onChange={e => setUrl(e.target.value)}
+            placeholder="https://example.com/calendrier.ics"
+            disabled={loading}
+            required
+          />
+          <Button
             type="submit"
-            className="btn-primary w-full"
+            className="w-full"
             disabled={loading || !url.trim()}
           >
             {loading ? 'Chargement...' : 'Charger le calendrier'}
-          </button>
+          </Button>
         </form>
       )}
 
       {loading && (
-        <div className="mt-6 flex items-center justify-center gap-3 py-4">
-          <div className="animate-spin rounded-full h-5 w-5 border-2 border-neutral-300 border-t-neutral-900"></div>
-          <p className="text-neutral-600 text-sm">Chargement du calendrier...</p>
+        <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="animate-spin rounded-full h-4 w-4 border-2 border-border border-t-foreground"></div>
+          <span>Chargement...</span>
         </div>
       )}
     </div>

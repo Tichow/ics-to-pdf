@@ -1,86 +1,112 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
+    darkMode: ["class"],
+    content: [
     "./index.html",
     "./src/**/*.{js,jsx}",
   ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-      },
-      colors: {
-        // Palette neutre moderne
-        neutral: {
-          50: '#FAFAFA',
-          100: '#F5F5F5',
-          200: '#E5E5E5',
-          300: '#D4D4D4',
-          400: '#A3A3A3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
-          950: '#0A0A0A',
-        },
-        // Thèmes de couleur
-        theme: {
-          blue: {
-            50: '#EFF6FF',
-            100: '#DBEAFE',
-            500: '#3B82F6',
-            600: '#2563EB',
-            700: '#1D4ED8',
-            900: '#1E3A8A',
-          },
-          green: {
-            50: '#F0FDF4',
-            100: '#DCFCE7',
-            500: '#22C55E',
-            600: '#16A34A',
-            700: '#15803D',
-            900: '#14532D',
-          },
-          orange: {
-            50: '#FFF7ED',
-            100: '#FFEDD5',
-            500: '#F97316',
-            600: '#EA580C',
-            700: '#C2410C',
-            900: '#7C2D12',
-          },
-          purple: {
-            50: '#FAF5FF',
-            100: '#F3E8FF',
-            500: '#A855F7',
-            600: '#9333EA',
-            700: '#7E22CE',
-            900: '#581C87',
-          },
-        },
-      },
-      borderRadius: {
-        'DEFAULT': '0.5rem',
-        'lg': '0.75rem',
-        'xl': '1rem',
-        '2xl': '1.25rem',
-      },
-      boxShadow: {
-        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
-        'DEFAULT': '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08)',
-        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
-      },
-      transitionDuration: {
-        'DEFAULT': '200ms',
-      },
-      transitionTimingFunction: {
-        'DEFAULT': 'cubic-bezier(0.4, 0, 0.2, 1)',
-      },
-    },
+  	extend: {
+  		fontFamily: {
+  			sans: [
+  				'Geist',
+  				'system-ui',
+  				'-apple-system',
+  				'sans-serif'
+  			]
+  		},
+  		colors: {
+  			// Thèmes pour le PDF uniquement (pas l'UI)
+  			theme: {
+  				neutral: {
+  					DEFAULT: '#000000',
+  					light: 'rgba(0, 0, 0, 0.06)'
+  				},
+  				blue: {
+  					DEFAULT: '#2563EB',
+  					light: '#EFF6FF'
+  				},
+  				green: {
+  					DEFAULT: '#16A34A',
+  					light: '#F0FDF4'
+  				},
+  				orange: {
+  					DEFAULT: '#EA580C',
+  					light: '#FFF7ED'
+  				},
+  				purple: {
+  					DEFAULT: '#9333EA',
+  					light: '#FAF5FF'
+  				}
+  			},
+  			// Palette monochrome Notion-like
+  			border: 'rgba(0, 0, 0, 0.06)',
+  			input: 'rgba(0, 0, 0, 0.06)',
+  			ring: 'rgba(0, 0, 0, 0.2)',
+  			background: 'hsl(var(--background))',
+  			foreground: 'hsl(var(--foreground))',
+  			card: {
+  				DEFAULT: 'hsl(var(--card))',
+  				foreground: 'hsl(var(--card-foreground))'
+  			},
+  			popover: {
+  				DEFAULT: 'hsl(var(--popover))',
+  				foreground: 'hsl(var(--popover-foreground))'
+  			},
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary))',
+  				foreground: 'hsl(var(--primary-foreground))'
+  			},
+  			secondary: {
+  				DEFAULT: 'hsl(var(--secondary))',
+  				foreground: 'hsl(var(--secondary-foreground))'
+  			},
+  			muted: {
+  				DEFAULT: 'hsl(var(--muted))',
+  				foreground: 'hsl(var(--muted-foreground))'
+  			},
+  			accent: {
+  				DEFAULT: 'hsl(var(--accent))',
+  				foreground: 'hsl(var(--accent-foreground))'
+  			},
+  			destructive: {
+  				DEFAULT: 'hsl(var(--destructive))',
+  				foreground: 'hsl(var(--destructive-foreground))'
+  			},
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
+  			chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			}
+  		},
+  		borderRadius: {
+  			lg: '0.5rem',
+  			md: '0.375rem',
+  			sm: '0.25rem'
+  		},
+  		boxShadow: {
+  			sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+  			DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+  		},
+  		transitionDuration: {
+  			DEFAULT: '150ms'
+  		},
+  		fontSize: {
+  			xs: ['0.75rem', { lineHeight: '1rem' }],
+  			sm: ['0.875rem', { lineHeight: '1.25rem' }],
+  			base: ['0.9375rem', { lineHeight: '1.5rem' }],
+  			lg: ['1.125rem', { lineHeight: '1.75rem' }],
+  			xl: ['1.25rem', { lineHeight: '1.75rem' }],
+  			'2xl': ['1.5rem', { lineHeight: '2rem' }],
+  			'3xl': ['1.875rem', { lineHeight: '2.25rem' }]
+  		}
+  	}
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 

@@ -1,13 +1,22 @@
 import { Page, View, Text } from '@react-pdf/renderer'
-import { styles } from './styles'
+import { createStyles } from './styles'
 import { formatWeekRange } from '../utils/dateHelpers'
 import { CalendarGrid } from './CalendarGrid'
 
 /**
- * Composant pour afficher une page de semaine
+ * Composant pour afficher une page de semaine - Style Notion
  */
-export function WeekPage({ weekStart, weekEnd, days, events, includeWeekends = false, timeRange = { start: 8, end: 20 } }) {
+export function WeekPage({ 
+  weekStart, 
+  weekEnd, 
+  days, 
+  events, 
+  includeWeekends = false, 
+  timeRange = { start: 8, end: 20 },
+  theme = 'neutral'
+}) {
   const hasEvents = events && events.length > 0
+  const styles = createStyles(theme)
 
   // Les jours sont déjà filtrés dans weekGrouper, pas besoin de refiltrer ici
   return (
@@ -25,6 +34,7 @@ export function WeekPage({ weekStart, weekEnd, days, events, includeWeekends = f
           days={days} 
           events={events}
           timeRange={timeRange}
+          theme={theme}
         />
       ) : (
         <Text style={styles.emptyMessage}>Aucun événement cette semaine</Text>

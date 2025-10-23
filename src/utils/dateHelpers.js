@@ -91,11 +91,19 @@ export function formatWeekRange(startDate, endDate) {
     'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
     'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
   ]
+  
   const start = startDate.getDate()
   const end = endDate.getDate()
-  const moisNom = mois[endDate.getMonth()]
+  const startMois = mois[startDate.getMonth()]
+  const endMois = mois[endDate.getMonth()]
   const annee = endDate.getFullYear()
-  return `Semaine du ${start} au ${end} ${moisNom} ${annee}`
+  
+  // Si la semaine traverse deux mois
+  if (startDate.getMonth() !== endDate.getMonth()) {
+    return `Semaine du ${start} ${startMois} au ${end} ${endMois} ${annee}`
+  }
+  
+  return `Semaine du ${start} au ${end} ${endMois} ${annee}`
 }
 
 /**
