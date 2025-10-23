@@ -53,19 +53,26 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">
-        📅 Importer un calendrier
-      </h2>
+    <div className="card">
+      <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-100">
+          <svg className="w-4 h-4 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h2 className="text-base font-semibold text-neutral-900">
+          Importer un calendrier
+        </h2>
+      </div>
 
       {/* Sélecteur de mode */}
-      <div className="flex gap-2 mb-4">
+      <div className="inline-flex items-center bg-neutral-100 rounded-lg p-1 mb-6">
         <button
           onClick={() => setMode('file')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
             mode === 'file'
-              ? 'bg-primary text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              ? 'bg-white text-neutral-900 shadow-sm'
+              : 'text-neutral-600 hover:text-neutral-900'
           }`}
           disabled={loading}
         >
@@ -73,10 +80,10 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
         </button>
         <button
           onClick={() => setMode('url')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
             mode === 'url'
-              ? 'bg-primary text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              ? 'bg-white text-neutral-900 shadow-sm'
+              : 'text-neutral-600 hover:text-neutral-900'
           }`}
           disabled={loading}
         >
@@ -88,10 +95,10 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
       {mode === 'file' && (
         <div>
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+            className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
               dragActive
-                ? 'border-primary bg-accent'
-                : 'border-gray-300 hover:border-primary hover:bg-gray-50'
+                ? 'border-neutral-900 bg-neutral-50'
+                : 'border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -107,30 +114,40 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
               className="hidden"
               disabled={loading}
             />
-            <div className="text-4xl mb-2">📁</div>
-            <p className="text-gray-700 font-medium mb-1">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-100 mb-4">
+              <svg className="w-6 h-6 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <p className="text-neutral-900 font-medium mb-1">
               Glissez-déposez votre fichier .ics ici
             </p>
-            <p className="text-gray-500 text-sm">ou cliquez pour sélectionner</p>
+            <p className="text-neutral-500 text-sm">ou cliquez pour sélectionner</p>
           </div>
         </div>
       )}
 
       {/* Champ URL */}
       {mode === 'url' && (
-        <form onSubmit={handleURLSubmit}>
-          <input
-            type="url"
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            placeholder="https://example.com/calendrier.ics"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-3"
-            disabled={loading}
-            required
-          />
+        <form onSubmit={handleURLSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="calendar-url" className="label">
+              URL du calendrier
+            </label>
+            <input
+              id="calendar-url"
+              type="url"
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              placeholder="https://example.com/calendrier.ics"
+              className="input"
+              disabled={loading}
+              required
+            />
+          </div>
           <button
             type="submit"
-            className="w-full px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="btn-primary w-full"
             disabled={loading || !url.trim()}
           >
             {loading ? 'Chargement...' : 'Charger le calendrier'}
@@ -139,9 +156,9 @@ export function FileUploader({ onFileLoad, onURLLoad, loading }) {
       )}
 
       {loading && (
-        <div className="mt-4 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-primary"></div>
-          <p className="text-gray-600 mt-2">Chargement du calendrier...</p>
+        <div className="mt-6 flex items-center justify-center gap-3 py-4">
+          <div className="animate-spin rounded-full h-5 w-5 border-2 border-neutral-300 border-t-neutral-900"></div>
+          <p className="text-neutral-600 text-sm">Chargement du calendrier...</p>
         </div>
       )}
     </div>
