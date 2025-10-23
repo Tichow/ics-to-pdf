@@ -6,7 +6,7 @@ import { StyleSheet } from '@react-pdf/renderer'
 const themeColors = {
   neutral: {
     primary: '#000000',
-    light: 'rgba(0, 0, 0, 0.04)',
+    light: '#F5F5F5', // Gris clair opaque pour masquer les lignes de grille
   },
   blue: {
     primary: '#2563EB',
@@ -72,9 +72,11 @@ export const createStyles = (theme = 'neutral') => {
     timeColumn: {
       width: '6%',
       borderRightWidth: 1,
-      borderRightColor: 'rgba(0, 0, 0, 0.08)',
+      borderRightColor: 'rgba(0, 0, 0, 0.06)',
       borderRightStyle: 'solid',
-      backgroundColor: 'rgba(0, 0, 0, 0.015)',
+      backgroundColor: '#FAFAFA', // Gris très clair opaque
+      borderTopLeftRadius: 8,
+      borderBottomLeftRadius: 8,
     },
     timeCell: {
       height: 40, // Cellule complète d'une heure

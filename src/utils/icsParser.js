@@ -62,8 +62,10 @@ export function parseICS(icsContent) {
  */
 export async function fetchAndParseICS(url) {
   try {
-    // Essayer d'abord directement
     let response
+    let icsContent
+    
+    // Essayer d'abord directement
     try {
       response = await fetch(url, {
         mode: 'cors',
@@ -71,17 +73,37 @@ export async function fetchAndParseICS(url) {
           'Accept': 'text/calendar, text/plain, */*',
         },
       })
-    } catch (corsError) {
-      // Si CORS échoue, essayer avec un proxy
-      console.warn('CORS bloqué, tentative avec proxy...')
-      response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      
+      icsContent = await response.text()
+    } catch (directError) {
+      // Si CORS échoue ou autre erreur, essayer avec un proxy
+      console.warn('Requête directe échouée, tentative avec proxy CORS...', directError.message)
+      
+      try {
+        // Utiliser corsproxy.io qui est généralement plus fiable
+        response = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+        
+        icsContent = await response.text()
+      } catch (proxyError) {
+        // Si le premier proxy échoue, essayer allorigins comme fallback
+        console.warn('Premier proxy échoué, tentative avec proxy alternatif...')
+        response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+        
+        if (!response.ok) {
+          throw new Error(`Impossible d'accéder au calendrier. Le serveur bloque les requêtes externes.`)
+        }
+        
+        icsContent = await response.text()
+      }
     }
-
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`)
-    }
-
-    const icsContent = await response.text()
     
     if (!icsContent || icsContent.trim().length === 0) {
       throw new Error('Le fichier téléchargé est vide')
@@ -92,7 +114,7 @@ export async function fetchAndParseICS(url) {
     if (error.message.includes('Failed to fetch')) {
       throw new Error('Impossible de télécharger le calendrier. Vérifiez l\'URL et votre connexion internet.')
     }
-    throw new Error(`Erreur lors du téléchargement du calendrier: ${error.message}`)
+    throw error
   }
 }
 

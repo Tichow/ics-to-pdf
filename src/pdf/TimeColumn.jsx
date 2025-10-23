@@ -15,7 +15,8 @@ export function TimeColumn({ timeRange = { start: 8, end: 20 }, layout, theme = 
       {/* En-tête vide SANS bordure pour respecter les coins arrondis */}
       <View style={{ 
         height: layout.dayHeaderHeight,
-        backgroundColor: 'rgba(0, 0, 0, 0.015)',
+        backgroundColor: '#FAFAFA', // Gris très clair opaque
+        borderTopLeftRadius: 8,
       }} />
       
       {/* Cellules horaires avec labels alignés en haut à gauche */}
