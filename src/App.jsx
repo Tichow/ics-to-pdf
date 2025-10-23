@@ -40,6 +40,9 @@ function App() {
   const [timeRange, setTimeRange] = useState({ start: 8, end: 20 })
   const [showEventTimes, setShowEventTimes] = useState(true)
   const [showEventLocations, setShowEventLocations] = useState(true)
+  const [showTimezone, setShowTimezone] = useState(false)
+  const [showCustomTitle, setShowCustomTitle] = useState(false)
+  const [customTitle, setCustomTitle] = useState('')
 
   const canExport = events.length > 0 && startDate <= endDate
 
@@ -57,6 +60,8 @@ function App() {
           theme={currentTheme}
           showEventTimes={showEventTimes}
           showEventLocations={showEventLocations}
+          showTimezone={showTimezone}
+          customTitle={showCustomTitle ? customTitle : ''}
         />
       ).toBlob()
 
@@ -164,7 +169,7 @@ function App() {
                         type="checkbox"
                         checked={includeWeekends}
                         onChange={e => setIncludeWeekends(e.target.checked)}
-                        className="w-4 h-4 rounded border-input"
+                        className="w-4 h-4 rounded border-input accent-foreground cursor-pointer"
                       />
                       <Label htmlFor="weekends" className="cursor-pointer">
                         Week-ends
@@ -178,7 +183,7 @@ function App() {
                         type="checkbox"
                         checked={showEventTimes}
                         onChange={e => setShowEventTimes(e.target.checked)}
-                        className="w-4 h-4 rounded border-input"
+                        className="w-4 h-4 rounded border-input accent-foreground cursor-pointer"
                       />
                       <Label htmlFor="eventTimes" className="cursor-pointer">
                         Horaires des événements
@@ -192,11 +197,50 @@ function App() {
                         type="checkbox"
                         checked={showEventLocations}
                         onChange={e => setShowEventLocations(e.target.checked)}
-                        className="w-4 h-4 rounded border-input"
+                        className="w-4 h-4 rounded border-input accent-foreground cursor-pointer"
                       />
                       <Label htmlFor="eventLocations" className="cursor-pointer">
                         Lieux des événements
                       </Label>
+                    </div>
+
+                    {/* Timezone */}
+                    <div className="flex items-center space-x-2">
+                      <input
+                        id="timezone"
+                        type="checkbox"
+                        checked={showTimezone}
+                        onChange={e => setShowTimezone(e.target.checked)}
+                        className="w-4 h-4 rounded border-input accent-foreground cursor-pointer"
+                      />
+                      <Label htmlFor="timezone" className="cursor-pointer">
+                        Timezone
+                      </Label>
+                    </div>
+
+                    {/* Titre personnalisé */}
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <input
+                          id="customTitle"
+                          type="checkbox"
+                          checked={showCustomTitle}
+                          onChange={e => setShowCustomTitle(e.target.checked)}
+                          className="w-4 h-4 rounded border-input accent-foreground cursor-pointer"
+                        />
+                        <Label htmlFor="customTitle" className="cursor-pointer">
+                          Titre
+                        </Label>
+                      </div>
+                      {showCustomTitle && (
+                        <Input
+                          value={customTitle}
+                          onChange={e => setCustomTitle(e.target.value.slice(0, 60))}
+                          placeholder="Titre du calendrier"
+                          maxLength={60}
+                          className="text-sm"
+                        />
+                      )}
                     </div>
 
                     {/* Plage horaire */}
@@ -304,6 +348,8 @@ function App() {
           theme={currentTheme}
           showEventTimes={showEventTimes}
           showEventLocations={showEventLocations}
+          showTimezone={showTimezone}
+          customTitle={showCustomTitle ? customTitle : ''}
         />
       )}
     </div>

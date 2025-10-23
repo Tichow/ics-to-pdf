@@ -53,7 +53,7 @@ export const createStyles = (theme = 'neutral') => {
       letterSpacing: -0.3,
     },
     weekSubtitle: {
-      fontSize: 9,
+      fontSize: 10,
       color: '#9CA3AF',
       marginTop: 2,
     },

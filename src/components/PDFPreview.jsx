@@ -51,7 +51,7 @@ class PDFErrorBoundary extends Component {
 /**
  * Composant pour afficher l'aperçu du PDF - Style Notion
  */
-export function PDFPreview({ events, startDate, endDate, onClose, includeWeekends, timeRange, theme = 'neutral', showEventTimes = true, showEventLocations = true }) {
+export function PDFPreview({ events, startDate, endDate, onClose, includeWeekends, timeRange, theme = 'neutral', showEventTimes = true, showEventLocations = true, showTimezone = false, customTitle = '' }) {
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-background border border-border rounded-lg shadow-lg w-full h-full max-w-7xl max-h-[90vh] flex flex-col">
@@ -91,6 +91,8 @@ export function PDFPreview({ events, startDate, endDate, onClose, includeWeekend
                   theme={theme}
                   showEventTimes={showEventTimes}
                   showEventLocations={showEventLocations}
+                  showTimezone={showTimezone}
+                  customTitle={customTitle}
                 />
               </PDFViewer>
             </Suspense>
