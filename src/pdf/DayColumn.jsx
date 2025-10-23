@@ -7,7 +7,7 @@ import { EventBlock } from './EventBlock'
 /**
  * Composant pour afficher une colonne de jour avec ses événements - Style Notion
  */
-export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout, theme = 'neutral', isLast = false }) {
+export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, layout, theme = 'neutral', isLast = false, showEventTimes = true, showEventLocations = true }) {
   const styles = createStyles(theme)
   
   // Filtrer et valider les événements pour ce jour
@@ -85,6 +85,8 @@ export function DayColumn({ date, events, timeRange = { start: 8, end: 20 }, lay
             timeRange={timeRange}
             layout={layout}
             theme={theme}
+            showEventTimes={showEventTimes}
+            showEventLocations={showEventLocations}
           />
         ))}
       </View>

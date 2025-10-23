@@ -7,7 +7,7 @@ import { calculateEventDimensions, calculateEventTextDisplay } from '../utils/la
 /**
  * Composant pour afficher un bloc événement dans la grille - Style Notion
  */
-export function EventBlock({ event, day, timeRange = { start: 8, end: 20 }, layout, theme = 'neutral' }) {
+export function EventBlock({ event, day, timeRange = { start: 8, end: 20 }, layout, theme = 'neutral', showEventTimes = true, showEventLocations = true }) {
   const styles = createStyles(theme)
   try {
     // Validation des entrées
@@ -107,105 +107,146 @@ export function EventBlock({ event, day, timeRange = { start: 8, end: 20 }, layo
       ? event.location.substring(0, 20) + '...'
       : event.location || ''
 
-    // Styles selon le layout
-    if (textDisplay.layout === 'three-lines') {
-      // Layout 3 lignes : Ligne 1 = Titre, Ligne 2 = Horaire, Ligne 3 = Lieu
-      return (
-        <View
-          style={[
-            styles.eventBlock,
-            {
-              top: topPosition,
-              height: height,
-            },
-          ]}
-        >
-          <Text style={{
-            fontSize: textDisplay.titleSize,
-            fontWeight: 600,
-            color: '#000000',
-            marginBottom: 1.5,
-            lineHeight: 1.2,
-            letterSpacing: -0.08,
-          }}>
-            {title}
-          </Text>
-          <Text style={{
-            fontSize: textDisplay.timeSize,
-            color: '#6B7280',
-            fontWeight: 500,
-            lineHeight: 1.2,
-            marginBottom: location ? 1 : 0,
-          }}>
-            {startTime} - {endTime}
-          </Text>
-          {location && (
+    // Construire les parties à afficher selon les options
+    const showTime = showEventTimes
+    const showLocation = showEventLocations && location
+    
+    // Déterminer le texte secondaire (horaire et/ou lieu)
+    let secondaryText = ''
+    if (showTime && showLocation) {
+      secondaryText = `${startTime} - ${endTime} • ${location}`
+    } else if (showTime) {
+      secondaryText = `${startTime} - ${endTime}`
+    } else if (showLocation) {
+      secondaryText = location
+    }
+
+    // Si on a du texte secondaire, utiliser les layouts habituels
+    if (secondaryText) {
+      if (textDisplay.layout === 'three-lines' && showTime && showLocation) {
+        // Layout 3 lignes : Ligne 1 = Titre, Ligne 2 = Horaire, Ligne 3 = Lieu
+        return (
+          <View
+            style={[
+              styles.eventBlock,
+              {
+                top: topPosition,
+                height: height,
+              },
+            ]}
+          >
             <Text style={{
-              fontSize: textDisplay.timeSize - 0.5,
-              color: '#9CA3AF',
-              fontWeight: 400,
+              fontSize: textDisplay.titleSize,
+              fontWeight: 600,
+              color: '#000000',
+              marginBottom: 1.5,
               lineHeight: 1.2,
+              letterSpacing: -0.08,
             }}>
-              {location}
-            </Text>
-          )}
-        </View>
-      )
-    } else if (textDisplay.layout === 'two-lines') {
-      // Layout 2 lignes : Ligne 1 = Titre, Ligne 2 = Horaire - Lieu
-      return (
-        <View
-          style={[
-            styles.eventBlock,
-            {
-              top: topPosition,
-              height: height,
-            },
-          ]}
-        >
-          <Text style={{
-            fontSize: textDisplay.titleSize,
-            fontWeight: 600,
-            color: '#000000',
-            marginBottom: 1.5,
-            lineHeight: 1.2,
-            letterSpacing: -0.08,
-          }}>
-            {title}
-          </Text>
-          <Text style={{
-            fontSize: textDisplay.timeSize,
-            color: '#6B7280',
-            fontWeight: 500,
-            lineHeight: 1.2,
-          }}>
-            {startTime} - {endTime}{location ? ` • ${location}` : ''}
-          </Text>
-        </View>
-      )
-    } else {
-      // Layout 1 ligne : Titre - Horaire - Lieu (horaire et lieu en gris)
-      return (
-        <View
-          style={[
-            styles.eventBlock,
-            {
-              top: topPosition,
-              height: height,
-            },
-          ]}
-        >
-          <Text style={{
-            fontSize: textDisplay.titleSize,
-            lineHeight: 1.2,
-            letterSpacing: -0.08,
-          }}>
-            <Text style={{ fontWeight: 600, color: '#000000' }}>
               {title}
             </Text>
-            <Text style={{ fontWeight: 500, color: '#6B7280' }}>
-              {' • '}{startTime}-{endTime}{location ? ` • ${location}` : ''}
+            {showTime && (
+              <Text style={{
+                fontSize: textDisplay.timeSize,
+                color: '#6B7280',
+                fontWeight: 500,
+                lineHeight: 1.2,
+                marginBottom: showLocation ? 1 : 0,
+              }}>
+                {startTime} - {endTime}
+              </Text>
+            )}
+            {showLocation && (
+              <Text style={{
+                fontSize: textDisplay.timeSize - 0.5,
+                color: '#9CA3AF',
+                fontWeight: 400,
+                lineHeight: 1.2,
+              }}>
+                {location}
+              </Text>
+            )}
+          </View>
+        )
+      } else if (textDisplay.layout === 'two-lines' || textDisplay.layout === 'three-lines') {
+        // Layout 2 lignes : Ligne 1 = Titre, Ligne 2 = infos secondaires
+        return (
+          <View
+            style={[
+              styles.eventBlock,
+              {
+                top: topPosition,
+                height: height,
+              },
+            ]}
+          >
+            <Text style={{
+              fontSize: textDisplay.titleSize,
+              fontWeight: 600,
+              color: '#000000',
+              marginBottom: 1.5,
+              lineHeight: 1.2,
+              letterSpacing: -0.08,
+            }}>
+              {title}
             </Text>
+            <Text style={{
+              fontSize: textDisplay.timeSize,
+              color: '#6B7280',
+              fontWeight: 500,
+              lineHeight: 1.2,
+            }}>
+              {secondaryText}
+            </Text>
+          </View>
+        )
+      } else {
+        // Layout 1 ligne : Titre - infos secondaires (en gris)
+        return (
+          <View
+            style={[
+              styles.eventBlock,
+              {
+                top: topPosition,
+                height: height,
+              },
+            ]}
+          >
+            <Text style={{
+              fontSize: textDisplay.titleSize,
+              lineHeight: 1.2,
+              letterSpacing: -0.08,
+            }}>
+              <Text style={{ fontWeight: 600, color: '#000000' }}>
+                {title}
+              </Text>
+              <Text style={{ fontWeight: 500, color: '#6B7280' }}>
+                {' • '}{secondaryText}
+              </Text>
+            </Text>
+          </View>
+        )
+      }
+    } else {
+      // Pas de texte secondaire, afficher uniquement le titre
+      return (
+        <View
+          style={[
+            styles.eventBlock,
+            {
+              top: topPosition,
+              height: height,
+            },
+          ]}
+        >
+          <Text style={{
+            fontSize: textDisplay.titleSize,
+            fontWeight: 600,
+            color: '#000000',
+            lineHeight: 1.2,
+            letterSpacing: -0.08,
+          }}>
+            {title}
           </Text>
         </View>
       )

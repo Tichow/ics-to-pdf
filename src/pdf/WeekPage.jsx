@@ -13,7 +13,9 @@ export function WeekPage({
   events, 
   includeWeekends = false, 
   timeRange = { start: 8, end: 20 },
-  theme = 'neutral'
+  theme = 'neutral',
+  showEventTimes = true,
+  showEventLocations = true
 }) {
   const hasEvents = events && events.length > 0
   const styles = createStyles(theme)
@@ -35,6 +37,8 @@ export function WeekPage({
           events={events}
           timeRange={timeRange}
           theme={theme}
+          showEventTimes={showEventTimes}
+          showEventLocations={showEventLocations}
         />
       ) : (
         <Text style={styles.emptyMessage}>Aucun événement cette semaine</Text>

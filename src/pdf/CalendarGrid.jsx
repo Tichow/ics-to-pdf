@@ -7,7 +7,7 @@ import { calculateLayout } from '../utils/layoutCalculator'
 /**
  * Composant pour afficher la grille complète du calendrier - Style Notion
  */
-export function CalendarGrid({ days, events, timeRange = { start: 8, end: 20 }, theme = 'neutral' }) {
+export function CalendarGrid({ days, events, timeRange = { start: 8, end: 20 }, theme = 'neutral', showEventTimes = true, showEventLocations = true }) {
   // Calculer le layout responsive selon le nombre d'heures et de jours
   const numberOfHours = timeRange.end - timeRange.start
   const numberOfDays = days.length
@@ -30,6 +30,8 @@ export function CalendarGrid({ days, events, timeRange = { start: 8, end: 20 }, 
           layout={layout}
           theme={theme}
           isLast={index === days.length - 1}
+          showEventTimes={showEventTimes}
+          showEventLocations={showEventLocations}
         />
       ))}
     </View>

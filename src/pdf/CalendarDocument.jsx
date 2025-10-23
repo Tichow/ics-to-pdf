@@ -14,7 +14,9 @@ export function CalendarDocument({
   endDate, 
   includeWeekends = false, 
   timeRange = { start: 8, end: 20 },
-  theme = 'neutral'
+  theme = 'neutral',
+  showEventTimes = true,
+  showEventLocations = true
 }) {
   console.log('CalendarDocument: Génération avec', events.length, 'événements')
   console.log('Période:', startDate, 'à', endDate)
@@ -43,6 +45,8 @@ export function CalendarDocument({
           includeWeekends={includeWeekends}
           timeRange={timeRange}
           theme={theme}
+          showEventTimes={showEventTimes}
+          showEventLocations={showEventLocations}
         />
       ))}
     </Document>

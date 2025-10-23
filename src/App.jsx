@@ -38,6 +38,8 @@ function App() {
   const [showPreview, setShowPreview] = useState(false)
   const [includeWeekends, setIncludeWeekends] = useState(false)
   const [timeRange, setTimeRange] = useState({ start: 8, end: 20 })
+  const [showEventTimes, setShowEventTimes] = useState(true)
+  const [showEventLocations, setShowEventLocations] = useState(true)
 
   const canExport = events.length > 0 && startDate <= endDate
 
@@ -53,6 +55,8 @@ function App() {
           includeWeekends={includeWeekends}
           timeRange={timeRange}
           theme={currentTheme}
+          showEventTimes={showEventTimes}
+          showEventLocations={showEventLocations}
         />
       ).toBlob()
 
@@ -163,7 +167,35 @@ function App() {
                         className="w-4 h-4 rounded border-input"
                       />
                       <Label htmlFor="weekends" className="cursor-pointer">
-                        Inclure les week-ends
+                        Week-ends
+                      </Label>
+                    </div>
+
+                    {/* Horaires des événements */}
+                    <div className="flex items-center space-x-2">
+                      <input
+                        id="eventTimes"
+                        type="checkbox"
+                        checked={showEventTimes}
+                        onChange={e => setShowEventTimes(e.target.checked)}
+                        className="w-4 h-4 rounded border-input"
+                      />
+                      <Label htmlFor="eventTimes" className="cursor-pointer">
+                        Horaires des événements
+                      </Label>
+                    </div>
+
+                    {/* Lieux des événements */}
+                    <div className="flex items-center space-x-2">
+                      <input
+                        id="eventLocations"
+                        type="checkbox"
+                        checked={showEventLocations}
+                        onChange={e => setShowEventLocations(e.target.checked)}
+                        className="w-4 h-4 rounded border-input"
+                      />
+                      <Label htmlFor="eventLocations" className="cursor-pointer">
+                        Lieux des événements
                       </Label>
                     </div>
 
@@ -270,6 +302,8 @@ function App() {
           includeWeekends={includeWeekends}
           timeRange={timeRange}
           theme={currentTheme}
+          showEventTimes={showEventTimes}
+          showEventLocations={showEventLocations}
         />
       )}
     </div>
