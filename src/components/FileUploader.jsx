@@ -6,7 +6,7 @@ import { Upload, X, FileText, Link as LinkIcon } from 'lucide-react'
 /**
  * Composant pour uploader un fichier ICS ou entrer une URL - Style Notion
  */
-export function FileUploader({ onFileLoad, onURLLoad, onReset, loading, hasEvents }) {
+export function FileUploader({ onFileLoad, onURLLoad, onReset, loading, hasEvents, eventsCount = 0 }) {
   const [mode, setMode] = useState('file') // 'file' ou 'url'
   const [url, setUrl] = useState('')
   const [dragActive, setDragActive] = useState(false)
@@ -116,7 +116,9 @@ export function FileUploader({ onFileLoad, onURLLoad, onReset, loading, hasEvent
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{loadedFileName}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Fichier chargé avec succès</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Calendrier chargé avec succès • <strong>{eventsCount} événement{eventsCount > 1 ? 's' : ''}</strong>
+                  </p>
                 </div>
               </div>
             </div>
@@ -171,7 +173,9 @@ export function FileUploader({ onFileLoad, onURLLoad, onReset, loading, hasEvent
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{loadedFileName}</p>
-                  <p className="text-xs text-muted-foreground mt-1">URL chargée avec succès</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Calendrier chargé avec succès • <strong>{eventsCount} événement{eventsCount > 1 ? 's' : ''}</strong>
+                  </p>
                 </div>
               </div>
             </div>

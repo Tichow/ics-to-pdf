@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { CheckCircle2, Eye, Download } from 'lucide-react'
+import { Eye, Download } from 'lucide-react'
 
 /**
  * Composant principal - Style Notion monochrome
@@ -106,6 +106,7 @@ function App() {
               onReset={reset}
               loading={loading}
               hasEvents={events.length > 0}
+              eventsCount={events.length}
             />
             
             {events.length > 0 && (
@@ -257,17 +258,6 @@ function App() {
           )}
         </div>
 
-        {/* Message de succès (sous les 2 colonnes sur toute la largeur) */}
-        {events.length > 0 && !error && (
-          <Alert className="animate-slide-up">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-              <AlertDescription className="flex items-center">
-                Calendrier chargé avec succès • <strong className="ml-1">{events.length} événement{events.length > 1 ? 's' : ''}</strong>
-              </AlertDescription>
-            </div>
-          </Alert>
-        )}
       </main>
 
       {/* Aperçu PDF (modal) */}
