@@ -22,7 +22,10 @@ export function TimeColumn({ timeRange = { start: 8, end: 20 }, layout, theme = 
       {hours.map((hour, index) => {
         const isLastCell = index === hours.length - 1
         return (
-          <View key={hour} style={[styles.timeCell, { height: layout.cellHeight }] }>
+          <View key={hour} style={[
+            styles.timeCell,
+            { height: layout.cellHeight },
+          ]}>
             <Text style={styles.timeLabel}>{hour.toString().padStart(2, '0')}:00</Text>
           </View>
         )

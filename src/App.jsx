@@ -192,7 +192,7 @@ function App() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {Array.from({ length: 25 - timeRange.start }, (_, i) => timeRange.start + i + 1).map(h => (
+                            {Array.from({ length: 24 - timeRange.start }, (_, i) => timeRange.start + i + 1).map(h => (
                               <SelectItem key={h} value={h.toString()}>
                                 {h.toString().padStart(2, '0')}:00
                               </SelectItem>

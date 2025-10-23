@@ -85,6 +85,12 @@ export const createStyles = (theme = 'neutral') => {
       justifyContent: 'flex-start',
       paddingTop: 1, // léger décalage visuel pour éviter que le texte ne touche la ligne
     },
+    // Ligne horizontale dans la colonne temps (couleur plus claire)
+    timeCellWithBorder: {
+      borderBottomWidth: 0.5,
+      borderBottomColor: 'rgba(0, 0, 0, 0.05)',
+      borderBottomStyle: 'solid',
+    },
     timeLabel: {
       fontSize: 9,
       color: '#6B7280',
@@ -95,8 +101,8 @@ export const createStyles = (theme = 'neutral') => {
     // Colonnes des jours
     dayColumn: {
       width: '13.43%', // (94% / 7 jours)
-      borderRightWidth: 1,
-      borderRightColor: 'rgba(0, 0, 0, 0.08)',
+      borderRightWidth: 0.5,
+      borderRightColor: 'rgba(0, 0, 0, 0.06)',
       borderRightStyle: 'solid',
       position: 'relative',
     },
@@ -154,8 +160,8 @@ export const createStyles = (theme = 'neutral') => {
       position: 'relative',
     },
     hourCellWithBorder: {
-      borderBottomWidth: 1,
-      borderBottomColor: 'rgba(0, 0, 0, 0.06)',
+      borderBottomWidth: 0.5,
+      borderBottomColor: 'rgba(0, 0, 0, 0.05)',
       borderBottomStyle: 'solid',
     },
 
