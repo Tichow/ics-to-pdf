@@ -31,6 +31,7 @@ function App() {
     setFilename,
     loadFromFile,
     loadFromURL,
+    reset,
   } = useICSData()
 
   const { currentTheme, setCurrentTheme, allThemes } = usePDFTheme()
@@ -102,7 +103,9 @@ function App() {
             <FileUploader
               onFileLoad={loadFromFile}
               onURLLoad={loadFromURL}
+              onReset={reset}
               loading={loading}
+              hasEvents={events.length > 0}
             />
             
             {events.length > 0 && (
