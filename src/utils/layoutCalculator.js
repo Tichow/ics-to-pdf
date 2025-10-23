@@ -113,41 +113,38 @@ function calculateFontSizes(cellHeight) {
  * @returns {Object} - Configuration d'affichage du texte
  */
 export function calculateEventTextDisplay(eventHeightPx, cellHeight, baseTitleSize = 10, baseTimeSize = 9) {
-  // Hauteur minimale pour afficher les horaires (besoin d'au moins 2 lignes)
-  const minHeightForTime = Math.max(25, cellHeight * 0.8)
+  // Hauteur pour afficher sur 3 lignes : Ligne 1 = Titre, Ligne 2 = Horaire, Ligne 3 = Lieu
+  const minHeightForThreeLines = Math.max(35, cellHeight * 0.9)
   
-  // Hauteur pour afficher titre sur 2 lignes
-  const minHeightForTwoLines = Math.max(35, cellHeight * 1.2)
+  // Hauteur pour afficher sur 2 lignes : Ligne 1 = Titre, Ligne 2 = Horaire - Lieu
+  const minHeightForTwoLines = Math.max(22, cellHeight * 0.6)
   
-  // Toujours afficher le titre, mais adapter la taille de police
-  // Pour événements très courts (< 20px), réduire la police
-  let titleSize = baseTitleSize
-  let maxTitleLength = 30
-  
-  if (eventHeightPx < 15) {
-    // Très très petit événement
-    titleSize = 6
-    maxTitleLength = 15
-  } else if (eventHeightPx < 20) {
-    // Petit événement
-    titleSize = 7
-    maxTitleLength = 20
-  } else if (eventHeightPx < 30) {
-    // Événement moyen
-    titleSize = 8
-    maxTitleLength = 25
-  } else if (eventHeightPx >= minHeightForTwoLines) {
-    // Grand événement - titre sur 2 lignes
-    maxTitleLength = 50
-  }
-
-  return {
-    showTitle: true, // Toujours afficher le titre
-    showTime: eventHeightPx >= minHeightForTime,
-    titleSize,
-    timeSize: baseTimeSize,
-    maxTitleLines: eventHeightPx >= minHeightForTwoLines ? 2 : 1,
-    maxTitleLength,
+  // Si on a la place pour 3 lignes
+  if (eventHeightPx >= minHeightForThreeLines) {
+    return {
+      layout: 'three-lines', // Titre sur ligne 1, Horaire sur ligne 2, Lieu sur ligne 3
+      titleSize: Math.min(baseTitleSize, 8),
+      timeSize: Math.min(baseTimeSize, 6.5),
+      maxTitleLength: 35,
+    }
+  } 
+  // Si on a la place pour 2 lignes
+  else if (eventHeightPx >= minHeightForTwoLines) {
+    return {
+      layout: 'two-lines', // Titre sur ligne 1, "Horaire - Lieu" sur ligne 2
+      titleSize: Math.min(baseTitleSize, 8),
+      timeSize: Math.min(baseTimeSize, 6.5),
+      maxTitleLength: 30,
+    }
+  } 
+  // Sinon, tout sur une seule ligne
+  else {
+    return {
+      layout: 'one-line', // "Titre - Horaire - Lieu" sur une ligne
+      titleSize: Math.min(baseTitleSize * 0.9, 7),
+      timeSize: Math.min(baseTimeSize * 0.9, 6),
+      maxTitleLength: 15,
+    }
   }
 }
 
